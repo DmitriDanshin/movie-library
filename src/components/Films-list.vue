@@ -1,55 +1,131 @@
 <template>
 
+
   <div class="mx-auto flex justify-center items-center p-2 md:p-0 mt-6">
-    <div class="grid grid-cols-5 gap-4">
-      <div class="bg-white p-10">
-        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-left"
-             class="svg-inline--fa fa-chevron-left fa-w-10" role="img" xmlns="http://www.w3.org/2000/svg"
-             viewBox="0 0 320 512">
-          <path fill="currentColor"
-                d="M34.52 239.03L228.87 44.69c9.37-9.37 24.57-9.37 33.94 0l22.67 22.67c9.36 9.36 9.37 24.52.04 33.9L131.49 256l154.02 154.75c9.34 9.38 9.32 24.54-.04 33.9l-22.67 22.67c-9.37 9.37-24.57 9.37-33.94 0L34.52 272.97c-9.37-9.37-9.37-24.57 0-33.94z"></path>
-        </svg>
-      </div>
-      <div class="item border border-gray-300 bg-white shadow-lg rounded-lg p-10">
-        <img class="w-48 h-48  mx-auto" src="https://i.imgur.com/oX0hGJs.jpeg" alt="">
-        <div class="description mt-5">
-          <h3>Название фильма: </h3>
-          <h2>Год: </h2>
-          <h2>Страна: </h2>
-        </div>
-      </div>
-      <div class="item border border-gray-300 bg-white shadow-lg rounded-lg p-10">
-        <img class="w-48 h-48  mx-auto" src="https://i.imgur.com/oX0hGJs.jpeg" alt="">
-        <div class="description mt-5">
-          <h3>Название фильма: </h3>
-          <h2>Год: </h2>
-          <h2>Страна: </h2>
-        </div>
-      </div>
-      <div class="item border border-gray-300 bg-white shadow-lg rounded-lg p-10">
-        <img class="w-48 h-48  mx-auto" src="https://i.imgur.com/oX0hGJs.jpeg" alt="">
-        <div class="description mt-5">
-          <h3>Название фильма: </h3>
-          <h2>Год: </h2>
-          <h2>Страна: </h2>
-        </div>
-      </div>
-      <div class="bg-white p-10">
-        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right"
-             class="svg-inline--fa fa-chevron-right fa-w-10" role="img" xmlns="http://www.w3.org/2000/svg"
-             viewBox="0 0 320 512">
-          <path fill="currentColor"
-                d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"></path>
-        </svg>
-      </div>
+    <div class="grid gap-4" :class="showedArrows ? 'grid-cols-5' : 'grid-cols-3' ">
+      <films-list-arrows :show-arrows="showedArrows" @prev="prevArrowClicked" @next="nextArrowClicked">
+
+        <template v-slot:prev-arrow/>
+
+        <template v-slot:default>
+          <div v-for="movie in showedMovies" :key="movie"
+               class="item border border-gray-300 bg-white shadow-lg rounded-lg p-10">
+            <img class="w-48 h-48 mx-auto" src="https://i.imgur.com/oX0hGJs.jpeg" alt="">
+            <div class="description mt-5">
+              <h3>Название фильма: {{ movie.title }} </h3>
+              <h2>Год: {{ movie.year }} </h2>
+              <h2>Страна: {{ movie.country }}</h2>
+            </div>
+          </div>
+        </template>
+
+        <template v-slot:prev-next/>
+
+      </films-list-arrows>
+
     </div>
   </div>
 
 </template>
 
 <script>
+
+import FilmsListArrows from "./Films-list-arrows";
+
 export default {
-  name: "Films-list"
+  name: "Films-list",
+  components: {FilmsListArrows},
+  computed: {
+
+    filteredMovies() {
+      return this.movies.filter((m) => m);
+    },
+
+    showedMovies() {
+      return this.filteredMovies.slice(this.start, this.end);
+    },
+
+    showedArrows() {
+      return this.filteredMovies.length > 3;
+    }
+
+  },
+  methods: {
+    prevArrowClicked() {
+
+      if (this.start <= 0) {
+        return;
+      }
+
+      this.start -= 3;
+      this.end -= 3;
+
+    },
+    nextArrowClicked() {
+      if (this.end >= this.filteredMovies.length) {
+        return;
+      }
+
+      this.start += 3;
+      this.end += 3;
+
+
+    }
+  },
+  data() {
+    return {
+      start: 0,
+      end: 3,
+      movies: [
+        {
+          title: '',
+          year: 1,
+          country: '',
+        },
+        {
+          title: '',
+          year: 2,
+          country: '',
+        },
+        {
+          title: '',
+          year: 3,
+          country: '',
+        },
+        {
+          title: '',
+          year: 4,
+          country: '',
+        },
+        {
+          title: '',
+          year: 5,
+          country: '',
+        },
+        {
+          title: '',
+          year: 6,
+          country: '',
+        },
+        {
+          title: '',
+          year: 7,
+          country: '',
+        }, {
+          title: '',
+          year: 8,
+          country: '',
+        }, {
+          title: '',
+          year: 9,
+          country: '',
+        },
+
+
+      ],
+    }
+  }
+
 }
 </script>
 
