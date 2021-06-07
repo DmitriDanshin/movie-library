@@ -17,7 +17,7 @@
         </div>
 
         <div class="grid grid-cols-1 gap-2 rounded">
-          <button class=" rounded-md bg-gray-800 text-white">Add</button>
+          <button class=" rounded-md bg-gray-800 text-white" @click="addMovie">Add</button>
         </div>
         <div class="grid grid-cols-1 gap-2  p-2 rounded">
           Year:
@@ -42,11 +42,16 @@ export default {
       toInterval: new Date().getFullYear(),
     }
   },
-
+  methods: {
+    addMovie() {
+      this.$emit('add-movie');
+    }
+  },
   emits: {
     "movie-title-filtered": null,
     "from-interval": null,
     "to-interval": null,
+    "add-movie": null,
 
   },
 
