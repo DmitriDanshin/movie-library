@@ -2,21 +2,31 @@
 
   <films-menu @movie-title-filtered='filterMoviesByTitle' @fromInterval="filterByFromInterval"
               @toInterval="filterByToInterval" @add-movie="showAddBlock"/>
+
   <films-list v-if="!addMovie" :movieTitleFilter="movieTitleFilter" :fromInterval="fromInterval"
               :toInterval="toInterval" :movieToAdd="movieToAdd" :movies="movies" @delete="deleteMovie"/>
-  <films-add v-if="addMovie" @back="hideAddBlock" @save-movie="addMovieToList"/>
+  <films-editor v-if="addMovie" @back="hideAddBlock" @save-movie="addMovieToList"/>
 </template>
 
 <script>
 
+/*
+ TODO
+    Add functionality to change slider to grid;
+    Add functionality to edit cards;
+    Add functionality to load country list using API;
+    Add functionality to adding to important;
+    Use localstorage;
+    In Films-editor.vue add ability to edit genres;
+*/
 
 import FilmsList from "./components/Films-list";
 import FilmsMenu from "./components/Films-menu";
-import FilmsAdd from "./components/Films-add";
+import FilmsEditor from "./components/Films-editor";
 
 export default {
   name: 'App',
-  components: {FilmsAdd, FilmsMenu, FilmsList},
+  components: {FilmsEditor, FilmsMenu, FilmsList},
   data() {
     return {
       movieTitleFilter: '',
@@ -30,88 +40,16 @@ export default {
           year: 1,
           country: '',
           genres: [
-            'Action', 'Comedy', 'Drama'
+            {
+              title: 'Action',
+              color: 'bg-red-500'
+            },
+            {
+              title: 'Action',
+              color: 'bg-blue-500'
+            },
           ]
         },
-        {
-          title: 'First',
-          year: 1,
-          country: '',
-          genres: [
-            'Action', 'Comedy', 'Drama'
-          ]
-        },
-        {
-          title: 'Second',
-          year: 2,
-          country: '',
-          genres: [
-            'Fantasy', 'Horror', 'Mystery'
-          ]
-        },
-        {
-          title: 'Third',
-          year: 3,
-          country: '',
-          genres: [
-            'Fantasy', 'Horror', 'Mystery'
-          ]
-        },
-        {
-          title: 'Fourth',
-          year: 4,
-          country: '',
-          genres: [
-            'Fantasy', 'Horror', 'Mystery'
-          ]
-        },
-        {
-          title: 'Fifth',
-          year: 5,
-          country: '',
-          genres: [
-            'Fantasy', 'Horror', 'Mystery'
-          ]
-        },
-        {
-          title: 'Sixth',
-          year: 6,
-          country: '',
-          genres: [
-            'Horror', 'Mystery'
-          ]
-        },
-        {
-          title: 'Seventh',
-          year: 7,
-          country: '',
-          genres: [
-            'Fantasy', 'Horror', 'Mystery'
-          ]
-        },
-        {
-          title: 'Eight',
-          year: 8,
-          country: '',
-          genres: [
-            'Horror', 'Fantasy', 'Mystery'
-          ]
-        },
-        {
-          title: 'Ninth',
-          year: 9,
-          country: '',
-          genres: [
-            'Horror',
-          ]
-        },
-        {
-          title: 'Tenth',
-          year: 9,
-          country: '',
-          genres: []
-        },
-
 
       ],
     }
@@ -129,7 +67,9 @@ export default {
       return this.addMovie = false;
     },
     showAddBlock() {
-      return this.addMovie = true;
+      this.addMovie === true ?
+          this.addMovie = false :
+          this.addMovie = true;
     },
     filterMoviesByTitle(e) {
       this.movieTitleFilter = e;
