@@ -3,9 +3,12 @@
   <films-menu @movie-title-filtered='filterMoviesByTitle' @fromInterval="filterByFromInterval"
               @toInterval="filterByToInterval" @add-movie="showAddBlock"/>
 
-  <films-list v-if="!addMovie" :movieTitleFilter="movieTitleFilter" :fromInterval="fromInterval"
-              :toInterval="toInterval" :movieToAdd="movieToAdd" :movies="movies" @delete="deleteMovie"/>
-  <films-editor v-if="addMovie" @back="hideAddBlock" @save-movie="addMovieToList"/>
+  <films-list v-if="!isMovieEditorOpened" :movieTitleFilter="movieTitleFilter" :fromInterval="fromInterval"
+              :toInterval="toInterval" :movieToAdd="movieToAdd" :movies="movies" @delete="deleteMovie"
+              @edit="editMovie"/>
+
+  <films-editor v-if="isMovieEditorOpened" @back="hideAddBlock" @save-movie="addMovieToList"
+                :movie-to-edit="movieToEdit" @replace-movie="replaceMovie"/>
 </template>
 
 <script>
@@ -13,7 +16,6 @@
 /*
  TODO
     Add functionality to change slider to grid;
-    Add functionality to edit cards;
     Add functionality to load country list using API;
     Add functionality to adding to important;
     Use localstorage;
@@ -32,13 +34,14 @@ export default {
       movieTitleFilter: '',
       fromInterval: 0,
       toInterval: new Date().getFullYear(),
-      addMovie: false,
+      isMovieEditorOpened: false,
       movieToAdd: {},
+      movieToEdit: {},
       movies: [
         {
           title: 'First',
           year: 1,
-          country: '',
+          country: 'USA',
           genres: [
             {
               title: 'Action',
@@ -55,28 +58,44 @@ export default {
     }
   },
 
-
   methods: {
+
+    replaceMovie(movieToReplace) {
+      this.deleteMovie(movieToReplace)
+    },
+
+    editMovie(movieToEdit) {
+      this.movieToEdit = movieToEdit;
+      this.showAddBlock();
+    },
+
     deleteMovie(movieToRemove) {
       this.movies = this.movies.filter(m => m !== movieToRemove);
     },
+
     addMovieToList(movie) {
       this.movies.push(movie);
     },
+
     hideAddBlock() {
-      return this.addMovie = false;
+      this.movieToEdit = {};
+      return this.isMovieEditorOpened = false;
     },
+
     showAddBlock() {
-      this.addMovie === true ?
-          this.addMovie = false :
-          this.addMovie = true;
+      this.isMovieEditorOpened === true ?
+          this.isMovieEditorOpened = false :
+          this.isMovieEditorOpened = true;
     },
+
     filterMoviesByTitle(e) {
       this.movieTitleFilter = e;
     },
+
     filterByFromInterval(e) {
       this.fromInterval = e;
     },
+
     filterByToInterval(e) {
       this.toInterval = e;
     }

@@ -9,8 +9,8 @@
 
         <template v-slot:default>
           <film-item v-for="movie in showedMovies" :title="movie.title" :year="movie.year" :genres="movie.genres"
-                     :country="movie.country" @delete-movie="deleteMovie(movie)"
-                     :is-needed-delete-button="true" :key="movie"/>
+                     :country="movie.country" @delete-movie="deleteMovie(movie)" @edit-movie="editMovie(movie)"
+                     :is-edit-mode="false" :key="movie"/>
         </template>
 
         <template v-slot:prev-next/>
@@ -84,13 +84,18 @@ export default {
 
   },
   emits: {
-    'delete': null
+    'delete': null,
+    'edit': null,
   },
   methods: {
+    editMovie(movieToEdit) {
+      this.$emit('edit', movieToEdit);
+    },
 
     deleteMovie(movieToDelete) {
       this.$emit('delete', movieToDelete);
     },
+
     prevArrowClicked() {
 
       if (this.start <= 0) {

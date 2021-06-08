@@ -73,19 +73,29 @@ export default {
   components: {GenresEditor, FilmItem},
   emits: {
     'back': null,
-    'save-movie': null
+    'save-movie': null,
+    'replace-movie': null,
   },
+
+  props: {
+    movieToEdit: {
+      required: false,
+      type: Object
+    }
+  },
+
+
   data() {
     return {
-      title: '',
-      year: new Date().getFullYear(),
-      country: 'USA',
-      genres: [],
+      title: this.movieToEdit.title ?? '',
+      year: this.movieToEdit.year ?? new Date().getFullYear(),
+      country: this.movieToEdit.country ?? 'USA',
+      genres: this.movieToEdit.genres ?? [],
       isGenresEditorOpened: false
     }
   },
-  methods: {
 
+  methods: {
     addGenreToGenres(color, title) {
       const genres = this.genres.map(item => item.title);
 
@@ -95,16 +105,19 @@ export default {
 
       this.genres.push({title, color});
     },
+
     back() {
+
       this.$emit('back');
     },
+
     handleKey(event) {
       if (event.key === "Escape") {
         this.back();
       }
     },
-    save() {
 
+    save() {
       const movie = {
         title: this.title,
         year: this.year,
@@ -112,13 +125,20 @@ export default {
         country: this.country
       };
 
+      // is edited
+      if (Object.keys(this.movieToEdit).length !== 0) {
+        this.$emit('replace-movie', this.movieToEdit)
+      }
+
       this.$emit('save-movie', movie)
       this.back();
     }
   },
+
   mounted() {
     document.addEventListener('keydown', this.handleKey);
   },
+
   beforeUnmount() {
     document.removeEventListener('keydown', this.handleKey);
   },

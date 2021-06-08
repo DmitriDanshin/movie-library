@@ -5,7 +5,7 @@
     <div class="flex justify-center mt-2">
       <button v-if="!isEditMode" class=" rounded-md bg-gray-800 text-white p-1" @click="handleDelete">Delete
       </button>
-      <button v-if="!isEditMode" class="rounded-md bg-gray-800 text-white p-1 px-4 ml-2">Edit</button>
+      <button v-if="!isEditMode" class="rounded-md bg-gray-800 text-white p-1 px-4 ml-2" @click="handleEdit">Edit</button>
     </div>
 
     <div class="description mt-5">
@@ -27,10 +27,16 @@ export default {
   name: "Film-item",
   emits: {
     'delete-movie': null,
+    'edit-movie': null,
   },
   methods: {
     handleDelete() {
       this.$emit('delete-movie');
+    },
+
+    handleEdit(){
+      this.$emit('edit-movie');
+
     }
   },
   props: {
