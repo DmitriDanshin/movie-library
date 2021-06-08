@@ -38,9 +38,7 @@
           <div class="block">
             <span class="text-gray-700 ">Country: </span>
             <select class="mt-2 " v-model="country">
-              <option>Russia</option>
-              <option>USA</option>
-              <option>UK</option>
+              <option v-for="country in handledListOfCountries" :key="country"> {{ country }}</option>
             </select>
           </div>
         </div>
@@ -67,6 +65,7 @@
 <script>
 import FilmItem from "./Film-item";
 import GenresEditor from "./Genres-editor";
+import APIs from "../API";
 
 export default {
   name: "Films-editor",
@@ -84,6 +83,36 @@ export default {
     }
   },
 
+  computed: {
+    handledListOfCountries() {
+
+      const countriesToReplace = new Map([
+        ["Bolivia (Plurinational State of)", "Bolivia"],
+        ["Congo (Democratic Republic of the)", "Congo"],
+        ["Iran (Islamic Republic of)", "Iran"],
+        ["Lao People's Democratic Republic", "Laos"],
+        ["Syrian Arab Republic", "Syria"],
+        ["Korea (Democratic People's Republic of)", "North Korea"],
+        ["Korea (Republic of)", "South Korea"],
+        ["Tanzania, United Republic of", "Tanzania"],
+        ["United Arab Emirates", "UAE"],
+        ["Korea (Republic of)", "South Korea"],
+        ["United Kingdom of Great Britain and Northern Ireland", "UK"],
+        ["United States of America", "USA"],
+        ["Venezuela (Bolivarian Republic of)", "Venezuela"]
+      ]);
+
+      const filteredCountries = this.listOfCountries
+          .filter(country => country.population > 5_000_000)
+          .map(country => country.name)
+          .filter(country => !countriesToReplace.has(country));
+
+      filteredCountries.push(...countriesToReplace.values());
+
+      return filteredCountries.sort();
+
+    },
+  },
 
   data() {
     return {
@@ -91,11 +120,18 @@ export default {
       year: this.movieToEdit.year ?? new Date().getFullYear(),
       country: this.movieToEdit.country ?? 'USA',
       genres: this.movieToEdit.genres ?? [],
-      isGenresEditorOpened: false
+      isGenresEditorOpened: false,
+      listOfCountries: ['USA', 'UK', 'Russia'],
     }
   },
 
   methods: {
+
+    async loadListOfCountries() {
+      this.listOfCountries = await APIs.getListOfCountries();
+    },
+
+
     addGenreToGenres(color, title) {
       const genres = this.genres.map(item => item.title);
 
@@ -136,6 +172,7 @@ export default {
   },
 
   mounted() {
+    this.loadListOfCountries();
     document.addEventListener('keydown', this.handleKey);
   },
 

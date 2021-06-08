@@ -16,7 +16,6 @@
 /*
  TODO
     Add functionality to change slider to grid;
-    Add functionality to load country list using API;
     Add functionality to adding to important;
     Use localstorage;
     In Films-editor.vue add ability to edit genres;
@@ -26,9 +25,11 @@ import FilmsList from "./components/Films-list";
 import FilmsMenu from "./components/Films-menu";
 import FilmsEditor from "./components/Films-editor";
 
+
 export default {
   name: 'App',
   components: {FilmsEditor, FilmsMenu, FilmsList},
+
   data() {
     return {
       movieTitleFilter: '',
@@ -37,6 +38,7 @@ export default {
       isMovieEditorOpened: false,
       movieToAdd: {},
       movieToEdit: {},
+
       movies: [
         {
           title: 'First',
@@ -67,6 +69,7 @@ export default {
     editMovie(movieToEdit) {
       this.movieToEdit = movieToEdit;
       this.showAddBlock();
+
     },
 
     deleteMovie(movieToRemove) {
