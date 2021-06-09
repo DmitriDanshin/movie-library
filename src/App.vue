@@ -16,7 +16,8 @@
 
 /*
  TODO
-    Add functionality to change slider to grid;
+    Add functionality to change slider to grid
+    Add filter by favorites
     In Films-editor.vue add ability to edit genres;
 */
 
