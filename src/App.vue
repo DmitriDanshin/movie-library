@@ -5,10 +5,11 @@
 
   <films-list v-if="!isMovieEditorOpened" :movieTitleFilter="movieTitleFilter" :fromInterval="fromInterval"
               :toInterval="toInterval" :movieToAdd="movieToAdd" :movies="movies" @delete="deleteMovie"
-              @edit="editMovie"/>
+              @edit="editMovie" @switch-to-favorite="switchToFavorite"/>
 
   <films-editor v-if="isMovieEditorOpened" @back="hideAddBlock" @save-movie="addMovieToList"
                 :movie-to-edit="movieToEdit" @replace-movie="replaceMovie"/>
+
 </template>
 
 <script>
@@ -16,8 +17,6 @@
 /*
  TODO
     Add functionality to change slider to grid;
-    Add functionality to adding to important;
-    Use localstorage;
     In Films-editor.vue add ability to edit genres;
 */
 
@@ -38,38 +37,46 @@ export default {
       isMovieEditorOpened: false,
       movieToAdd: {},
       movieToEdit: {},
+      movies: [],
+    }
+  },
 
-      movies: [
-        {
-          title: 'First',
-          year: 1,
-          country: 'USA',
-          genres: [
-            {
-              title: 'Action',
-              color: 'bg-red-500'
-            },
-            {
-              title: 'Action',
-              color: 'bg-blue-500'
-            },
-          ]
-        },
+  created() {
+    const moviesList = localStorage.getItem('movies');
+    if (moviesList) {
+      this.movies = JSON.parse(moviesList);
+    }
+  },
 
-      ],
+  watch: {
+    movies() {
+      localStorage.setItem("movies", JSON.stringify(this.movies));
     }
   },
 
   methods: {
 
+    switchToFavorite(movieToFavorite) {
+
+      const movieToSwitch = this.movies.find(movie => movie === movieToFavorite)
+      movieToSwitch.isFavorite = !movieToFavorite.isFavorite;
+
+      /* const indexToReplace = this.movies.indexOf(movieToSwitch);
+      const beforeMovies = [...this.movies.splice(0, indexToReplace)];
+      const afterMovies = [...this.movies.splice(indexToReplace + 1)];
+      this.movies = [...beforeMovies, movieToSwitch, ...afterMovies];
+
+       */
+
+    },
+
     replaceMovie(movieToReplace) {
-      this.deleteMovie(movieToReplace)
+      this.deleteMovie(movieToReplace);
     },
 
     editMovie(movieToEdit) {
       this.movieToEdit = movieToEdit;
       this.showAddBlock();
-
     },
 
     deleteMovie(movieToRemove) {
@@ -77,7 +84,7 @@ export default {
     },
 
     addMovieToList(movie) {
-      this.movies.push(movie);
+      this.movies = [...this.movies, movie];
     },
 
     hideAddBlock() {

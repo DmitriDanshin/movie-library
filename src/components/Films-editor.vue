@@ -8,12 +8,12 @@
       <form class="bg-white shadow-md px-8 pt-6 pb-8 mb-4  shadow-lg">
         <div class="mb-4">
 
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+          <span class="block text-gray-700 text-sm font-bold mb-2">
             Name of movie:
-          </label>
+          </span>
           <input
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="name" type="text" placeholder="Name" v-model="title">
+              type="text" placeholder="Name" v-model="title">
         </div>
 
         <div class="mb-4">
@@ -57,7 +57,9 @@
       </form>
     </div>
 
-    <film-item :title="title" :year="year" :genres="genres" :country="country" :is-edit-mode="true"/>
+    <film-item :title="title" :year="year" :genres="genres" :country="country" :is-edit-mode="true"
+               :is-favorite="isFavorite" @switch-to-favorite="switchToFavorite"/>
+
   </div>
 </template>
 
@@ -103,7 +105,7 @@ export default {
       ]);
 
       const filteredCountries = this.listOfCountries
-          .filter(country => country.population > 5_000_000)
+          .filter(country => country.population > 5e6)
           .map(country => country.name)
           .filter(country => !countriesToReplace.has(country));
 
@@ -120,6 +122,7 @@ export default {
       year: this.movieToEdit.year ?? new Date().getFullYear(),
       country: this.movieToEdit.country ?? 'USA',
       genres: this.movieToEdit.genres ?? [],
+      isFavorite: this.movieToEdit.isFavorite ?? false,
       isGenresEditorOpened: false,
       listOfCountries: ['USA', 'UK', 'Russia'],
     }
@@ -131,11 +134,14 @@ export default {
       this.listOfCountries = await APIs.getListOfCountries();
     },
 
+    switchToFavorite() {
+      this.isFavorite = !this.isFavorite;
+    },
 
     addGenreToGenres(color, title) {
       const genres = this.genres.map(item => item.title);
 
-      if (genres.includes(title)) {
+      if (genres.includes(title) || title === '') {
         return;
       }
 
@@ -154,11 +160,13 @@ export default {
     },
 
     save() {
+
       const movie = {
         title: this.title,
         year: this.year,
         genres: this.genres,
-        country: this.country
+        country: this.country,
+        isFavorite: this.isFavorite,
       };
 
       // is edited

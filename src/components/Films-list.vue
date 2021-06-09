@@ -8,9 +8,12 @@
         <template v-slot:prev-arrow/>
 
         <template v-slot:default>
+
           <film-item v-for="movie in showedMovies" :title="movie.title" :year="movie.year" :genres="movie.genres"
                      :country="movie.country" @delete-movie="deleteMovie(movie)" @edit-movie="editMovie(movie)"
-                     :is-edit-mode="false" :key="movie"/>
+                     :is-edit-mode="false" :key="movie" :is-favorite="movie.isFavorite"
+                     @switch-to-favorite="switchToFavorite(movie)"/>
+
         </template>
 
         <template v-slot:prev-next/>
@@ -50,7 +53,8 @@ export default {
     fromInterval: {
       type: Number,
       required: false,
-    }
+    },
+
   },
   computed: {
 
@@ -86,10 +90,15 @@ export default {
   emits: {
     'delete': null,
     'edit': null,
+    'switch-to-favorite': null,
   },
   methods: {
     editMovie(movieToEdit) {
       this.$emit('edit', movieToEdit);
+    },
+
+    switchToFavorite(movie) {
+      this.$emit('switch-to-favorite', movie);
     },
 
     deleteMovie(movieToDelete) {
