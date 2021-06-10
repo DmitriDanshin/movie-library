@@ -61,18 +61,16 @@ export default {
 
       const movieToSwitch = this.movies.find(movie => movie === movieToFavorite)
       movieToSwitch.isFavorite = !movieToFavorite.isFavorite;
-
-      /* const indexToReplace = this.movies.indexOf(movieToSwitch);
-      const beforeMovies = [...this.movies.splice(0, indexToReplace)];
-      const afterMovies = [...this.movies.splice(indexToReplace + 1)];
-      this.movies = [...beforeMovies, movieToSwitch, ...afterMovies];
-
-       */
+      this.replaceMovie(movieToFavorite, movieToSwitch);
 
     },
 
-    replaceMovie(movieToReplace) {
-      this.deleteMovie(movieToReplace);
+    replaceMovie(target, replace) {
+
+      const index = this.movies.indexOf(target);
+      this.movies[index] = replace;
+      this.movies = [...this.movies];
+      this.hideAddBlock();
     },
 
     editMovie(movieToEdit) {

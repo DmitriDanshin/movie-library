@@ -7,7 +7,7 @@
     <div class="flex justify-center mt-2">
       <button v-if="!isEditMode" class=" rounded-md bg-gray-800 text-white p-1" @click.stop="handleDelete">Delete
       </button>
-      <button v-if="!isEditMode" class="rounded-md bg-gray-800 text-white p-1 px-4 ml-2" @click="handleEdit">Edit
+      <button v-if="!isEditMode" class="rounded-md bg-gray-800 text-white p-1 px-4 ml-2" @click.stop="handleEdit">Edit
       </button>
     </div>
 
