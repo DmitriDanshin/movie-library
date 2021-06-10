@@ -172,13 +172,13 @@ export default {
       // is edited
 
       if (Object.keys(this.movieToEdit).length !== 0) {
-
         this.$emit('replace-movie', this.movieToEdit, movie);
-        return;
+
+      } else {
+        this.$emit('save-movie', movie)
+        this.back();
       }
 
-      this.$emit('save-movie', movie)
-      this.back();
     }
   },
 

@@ -71,6 +71,7 @@ export default {
       this.movies[index] = replace;
       this.movies = [...this.movies];
       this.hideAddBlock();
+
     },
 
     editMovie(movieToEdit) {
