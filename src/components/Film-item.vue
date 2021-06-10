@@ -1,7 +1,7 @@
 <template>
   <div :class="isFavorite ? 'border-blue-300' : 'border-gray-300'"
        @click="switchToFavorite"
-       class="item border  bg-white shadow-lg rounded-lg p-10 cursor-pointer">
+       class="item border  bg-white shadow-lg rounded-lg p-10 ">
     <img class="w-48 h-48 mx-auto" src="https://i.imgur.com/oX0hGJs.jpeg" alt="">
 
     <div class="flex justify-center mt-2">
@@ -16,11 +16,14 @@
       <h2>Year: {{ year }} </h2>
       <h2>Country: {{ country }}</h2>
       <div class="grid grid-cols-3 gap-2 mt-4">
-        <div v-for="genre in genres" :key="genre"
+
+        <div v-for="genre in genres" :key="genre" @click="deleteGenre(genre)"
              :class="genre.color === 'bg-black' ? 'bg-black text-white' : genre.color"
-             class="rounded-lg shadow-lg  text-center p-1 text-sm">
-          {{ genre.title }}
+             class="rounded-lg shadow-lg text-center p-1 text-sm">
+          <div :class='{"cursor-pointer": isEditMode}'>{{ genre.title }}</div>
+
         </div>
+
       </div>
     </div>
   </div>
@@ -32,15 +35,25 @@ export default {
   emits: {
     'delete-movie': null,
     'edit-movie': null,
-    'switch-to-favorite': null
+    'switch-to-favorite': null,
+    'delete-genre': null,
   },
   methods: {
+
     handleDelete() {
       this.$emit('delete-movie');
     },
+
     switchToFavorite() {
       this.$emit('switch-to-favorite');
     },
+
+    deleteGenre(genre) {
+      if (this.isEditMode) {
+        this.$emit('delete-genre', genre);
+      }
+    },
+
     handleEdit() {
       this.$emit('edit-movie');
 

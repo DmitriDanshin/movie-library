@@ -8,7 +8,7 @@
               @edit="editMovie" @switch-to-favorite="switchToFavorite"/>
 
   <films-editor v-if="isMovieEditorOpened" @back="hideAddBlock" @save-movie="addMovieToList"
-                :movie-to-edit="movieToEdit" @replace-movie="replaceMovie"/>
+                :movie-to-edit="movieToEdit" @replace-movie="replaceMovie" />
 
 </template>
 
@@ -18,7 +18,7 @@
  TODO
     Add functionality to change slider to grid
     Add filter by favorites
-    In Films-editor.vue add ability to edit genres;
+
 */
 
 import FilmsList from "./components/Films-list";
@@ -55,7 +55,9 @@ export default {
     }
   },
 
+
   methods: {
+
 
     switchToFavorite(movieToFavorite) {
 
@@ -70,6 +72,7 @@ export default {
       const index = this.movies.indexOf(target);
       this.movies[index] = replace;
       this.movies = [...this.movies];
+
       this.hideAddBlock();
 
     },

@@ -58,7 +58,7 @@
     </div>
 
     <film-item :title="title" :year="year" :genres="genres" :country="country" :is-edit-mode="true"
-               :is-favorite="isFavorite" @switch-to-favorite="switchToFavorite"/>
+               :is-favorite="isFavorite" @switch-to-favorite="switchToFavorite" @delete-genre="deleteGenre"/>
 
   </div>
 </template>
@@ -72,10 +72,29 @@ import APIs from "../API";
 export default {
   name: "Films-editor",
   components: {GenresEditor, FilmItem},
+
+  COUNTRIES_TO_REPLACE: new Map([
+    ["Bolivia (Plurinational State of)", "Bolivia"],
+    ["Congo (Democratic Republic of the)", "Congo"],
+    ["Iran (Islamic Republic of)", "Iran"],
+    ["Lao People's Democratic Republic", "Laos"],
+    ["Syrian Arab Republic", "Syria"],
+    ["Korea (Democratic People's Republic of)", "North Korea"],
+    ["Korea (Republic of)", "South Korea"],
+    ["Tanzania, United Republic of", "Tanzania"],
+    ["United Arab Emirates", "UAE"],
+    ["Korea (Republic of)", "South Korea"],
+    ["United Kingdom of Great Britain and Northern Ireland", "UK"],
+    ["United States of America", "USA"],
+    ["Venezuela (Bolivarian Republic of)", "Venezuela"],
+    ["Russian Federation", "Russia"]
+  ]),
+
   emits: {
     'back': null,
     'save-movie': null,
     'replace-movie': null,
+    'delete-genre': Object,
   },
 
   props: {
@@ -88,28 +107,12 @@ export default {
   computed: {
     handledListOfCountries() {
 
-      const countriesToReplace = new Map([
-        ["Bolivia (Plurinational State of)", "Bolivia"],
-        ["Congo (Democratic Republic of the)", "Congo"],
-        ["Iran (Islamic Republic of)", "Iran"],
-        ["Lao People's Democratic Republic", "Laos"],
-        ["Syrian Arab Republic", "Syria"],
-        ["Korea (Democratic People's Republic of)", "North Korea"],
-        ["Korea (Republic of)", "South Korea"],
-        ["Tanzania, United Republic of", "Tanzania"],
-        ["United Arab Emirates", "UAE"],
-        ["Korea (Republic of)", "South Korea"],
-        ["United Kingdom of Great Britain and Northern Ireland", "UK"],
-        ["United States of America", "USA"],
-        ["Venezuela (Bolivarian Republic of)", "Venezuela"]
-      ]);
-
       const filteredCountries = this.listOfCountries
           .filter(country => country.population > 5e6)
           .map(country => country.name)
-          .filter(country => !countriesToReplace.has(country));
+          .filter(country => !this.$options.COUNTRIES_TO_REPLACE.has(country));
 
-      filteredCountries.push(...countriesToReplace.values());
+      filteredCountries.push(...this.$options.COUNTRIES_TO_REPLACE.values());
 
       return filteredCountries.sort();
 
@@ -132,6 +135,7 @@ export default {
 
     async loadListOfCountries() {
       this.listOfCountries = await APIs.getListOfCountries();
+
     },
 
     switchToFavorite() {
@@ -149,8 +153,11 @@ export default {
     },
 
     back() {
-
       this.$emit('back');
+    },
+
+    deleteGenre(genreToRemove) {
+      this.genres = this.genres.filter(g => g !== genreToRemove);
     },
 
     handleKey(event) {
@@ -169,10 +176,10 @@ export default {
         isFavorite: this.isFavorite,
       };
 
-      // is edited
-
+      // is edited ?
       if (Object.keys(this.movieToEdit).length !== 0) {
         this.$emit('replace-movie', this.movieToEdit, movie);
+
 
       } else {
         this.$emit('save-movie', movie)
