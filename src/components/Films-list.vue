@@ -40,6 +40,11 @@ export default {
       required: true
     },
 
+    movieFavoriteFilter: {
+      type: Boolean,
+      required: false,
+    },
+
     movieTitleFilter: {
       type: String,
       required: false,
@@ -73,6 +78,10 @@ export default {
             to = this.toInterval;
 
         return movie.year >= from && movie.year <= to;
+
+      }).filter((movie) => {
+
+        return this.movieFavoriteFilter ? movie.isFavorite : true;
 
       });
 

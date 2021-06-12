@@ -1,25 +1,19 @@
 <template>
 
   <films-menu @movie-title-filtered='filterMoviesByTitle' @fromInterval="filterByFromInterval"
-              @toInterval="filterByToInterval" @add-movie="showAddBlock"/>
+              @toInterval="filterByToInterval" @add-movie="showAddBlock" @movie-favorite-filtered="sortByFavorite"/>
 
   <films-list v-if="!isMovieEditorOpened" :movieTitleFilter="movieTitleFilter" :fromInterval="fromInterval"
               :toInterval="toInterval" :movieToAdd="movieToAdd" :movies="movies" @delete="deleteMovie"
-              @edit="editMovie" @switch-to-favorite="switchToFavorite"/>
+              @edit="editMovie" @switch-to-favorite="switchToFavorite" :movieFavoriteFilter="movieFavoriteFilter"/>
 
   <films-editor v-if="isMovieEditorOpened" @back="hideAddBlock" @save-movie="addMovieToList"
-                :movie-to-edit="movieToEdit" @replace-movie="replaceMovie" />
+                :movie-to-edit="movieToEdit" @replace-movie="replaceMovie"/>
 
 </template>
 
 <script>
 
-/*
- TODO
-    Add functionality to change slider to grid
-    Add filter by favorites
-
-*/
 
 import FilmsList from "./components/Films-list";
 import FilmsMenu from "./components/Films-menu";
@@ -33,6 +27,7 @@ export default {
   data() {
     return {
       movieTitleFilter: '',
+      movieFavoriteFilter: false,
       fromInterval: 0,
       toInterval: new Date().getFullYear(),
       isMovieEditorOpened: false,
@@ -58,6 +53,9 @@ export default {
 
   methods: {
 
+    sortByFavorite(mode) {
+      this.movieFavoriteFilter = mode;
+    },
 
     switchToFavorite(movieToFavorite) {
 
@@ -101,16 +99,16 @@ export default {
           this.isMovieEditorOpened = true;
     },
 
-    filterMoviesByTitle(e) {
-      this.movieTitleFilter = e;
+    filterMoviesByTitle(filter) {
+      this.movieTitleFilter = filter;
     },
 
-    filterByFromInterval(e) {
-      this.fromInterval = e;
+    filterByFromInterval(filter) {
+      this.fromInterval = filter;
     },
 
-    filterByToInterval(e) {
-      this.toInterval = e;
+    filterByToInterval(filter) {
+      this.toInterval = filter;
     }
   }
 }
