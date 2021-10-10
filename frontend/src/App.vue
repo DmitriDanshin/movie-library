@@ -1,32 +1,46 @@
 <template>
+  <films-menu
+    @movie-title-filtered="filterMoviesByTitle"
+    @fromInterval="filterByFromInterval"
+    @toInterval="filterByToInterval"
+    @add-movie="showAddBlock"
+    @movie-favorite-filtered="sortByFavorite"
+  />
 
-  <films-menu @movie-title-filtered='filterMoviesByTitle' @fromInterval="filterByFromInterval"
-              @toInterval="filterByToInterval" @add-movie="showAddBlock" @movie-favorite-filtered="sortByFavorite"/>
+  <films-list
+    v-if="!isMovieEditorOpened"
+    :movieTitleFilter="movieTitleFilter"
+    :fromInterval="fromInterval"
+    :toInterval="toInterval"
+    :movieToAdd="movieToAdd"
+    :movies="movies"
+    @delete="deleteMovie"
+    @edit="editMovie"
+    @switch-to-favorite="switchToFavorite"
+    :movieFavoriteFilter="movieFavoriteFilter"
+  />
 
-  <films-list v-if="!isMovieEditorOpened" :movieTitleFilter="movieTitleFilter" :fromInterval="fromInterval"
-              :toInterval="toInterval" :movieToAdd="movieToAdd" :movies="movies" @delete="deleteMovie"
-              @edit="editMovie" @switch-to-favorite="switchToFavorite" :movieFavoriteFilter="movieFavoriteFilter"/>
-
-  <films-editor v-if="isMovieEditorOpened" @back="hideAddBlock" @save-movie="addMovieToList"
-                :movie-to-edit="movieToEdit" @replace-movie="replaceMovie"/>
-
+  <films-editor
+    v-if="isMovieEditorOpened"
+    @back="hideAddBlock"
+    @save-movie="addMovieToList"
+    :movie-to-edit="movieToEdit"
+    @replace-movie="replaceMovie"
+  />
 </template>
 
 <script>
-
-
 import FilmsList from "./components/Films-list";
 import FilmsMenu from "./components/Films-menu";
 import FilmsEditor from "./components/Films-editor";
 
-
 export default {
-  name: 'App',
-  components: {FilmsEditor, FilmsMenu, FilmsList},
+  name: "App",
+  components: { FilmsEditor, FilmsMenu, FilmsList },
 
   data() {
     return {
-      movieTitleFilter: '',
+      movieTitleFilter: "",
       movieFavoriteFilter: false,
       fromInterval: 0,
       toInterval: new Date().getFullYear(),
@@ -34,11 +48,11 @@ export default {
       movieToAdd: {},
       movieToEdit: {},
       movies: [],
-    }
+    };
   },
 
   created() {
-    const moviesList = localStorage.getItem('movies');
+    const moviesList = localStorage.getItem("movies");
     if (moviesList) {
       this.movies = JSON.parse(moviesList);
     }
@@ -47,32 +61,28 @@ export default {
   watch: {
     movies() {
       localStorage.setItem("movies", JSON.stringify(this.movies));
-    }
+    },
   },
 
-
   methods: {
-
     sortByFavorite(mode) {
       this.movieFavoriteFilter = mode;
     },
 
     switchToFavorite(movieToFavorite) {
-
-      const movieToSwitch = this.movies.find(movie => movie === movieToFavorite)
+      const movieToSwitch = this.movies.find(
+        (movie) => movie === movieToFavorite
+      );
       movieToSwitch.isFavorite = !movieToFavorite.isFavorite;
       this.replaceMovie(movieToFavorite, movieToSwitch);
-
     },
 
     replaceMovie(target, replace) {
-
       const index = this.movies.indexOf(target);
       this.movies[index] = replace;
       this.movies = [...this.movies];
 
       this.hideAddBlock();
-
     },
 
     editMovie(movieToEdit) {
@@ -81,7 +91,7 @@ export default {
     },
 
     deleteMovie(movieToRemove) {
-      this.movies = this.movies.filter(m => m !== movieToRemove);
+      this.movies = this.movies.filter((m) => m !== movieToRemove);
     },
 
     addMovieToList(movie) {
@@ -90,13 +100,13 @@ export default {
 
     hideAddBlock() {
       this.movieToEdit = {};
-      return this.isMovieEditorOpened = false;
+      return (this.isMovieEditorOpened = false);
     },
 
     showAddBlock() {
-      this.isMovieEditorOpened === true ?
-          this.isMovieEditorOpened = false :
-          this.isMovieEditorOpened = true;
+      this.isMovieEditorOpened === true
+        ? (this.isMovieEditorOpened = false)
+        : (this.isMovieEditorOpened = true);
     },
 
     filterMoviesByTitle(filter) {
@@ -109,11 +119,9 @@ export default {
 
     filterByToInterval(filter) {
       this.toInterval = filter;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>
